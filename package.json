@@ -15,5 +15,8 @@
   "dependencies": {
     "coinjar": "0.0.3",
     "pushover-notifications": "~0.1.6"
+  },
+  "scripts": {
+    "start": "node ."
   }
 }
