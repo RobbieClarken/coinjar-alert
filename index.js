@@ -5,11 +5,15 @@ var config = require('./config')
   , pushover = new Pushover(config.pushover)
   , lastAlertedPrice = null
 
-function sendAlert(price) {
+function sendAlert(price, change) {
 
+  var priceStr = price.toFixed(config.decimalPlaces)
+    , changeStr = ' (' + (change < 0 ? '↓' : '↑') +
+                  Math.abs(change).toFixed(config.decimalPlaces) + ') '
   var data = {
       title: 'CoinJar Price Alert'
-    , message: 'The CoinJar spot price is ' + price + ' ' + config.currency + '.'
+    , message: 'The CoinJar spot price is ' + priceStr + changeStr +
+               config.currency + '.'
     , sound: config.sound
   }
 
@@ -28,11 +32,11 @@ function sendAlert(price) {
 
     var price = parseFloat(data['spot'])
 
-    if(lastAlertedPrice === null) return sendAlert(price)
+    if(lastAlertedPrice === null) return lastAlertedPrice = price
 
-    var change = (price - lastAlertedPrice) / lastAlertedPrice;
+    var change = (price - lastAlertedPrice) / lastAlertedPrice
     if(Math.abs(change) > config.alertChange) {
-      sendAlert(price)
+      sendAlert(price, change)
     }
 
   })
