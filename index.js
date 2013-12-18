@@ -14,7 +14,7 @@ function sendAlert(price, change) {
       title: 'CoinJar Price Alert'
     , message: 'The CoinJar spot price is ' + priceStr + changeStr +
                config.currency + '.'
-    , sound: config.sound
+    , sound: change > 0 ? config.sounds.rise : config.sounds.fall
   }
 
   pushover.send(data, function(err, result) {
@@ -34,8 +34,9 @@ function sendAlert(price, change) {
 
     if(lastAlertedPrice === null) return lastAlertedPrice = price
 
-    var change = (price - lastAlertedPrice) / lastAlertedPrice
-    if(Math.abs(change) > config.alertChange) {
+    var change = price - lastAlertedPrice
+      , changePercent = 100 * change / lastAlertedPrice
+    if(Math.abs(changePercent) > config.alertChangePercent) {
       sendAlert(price, change)
     }
 
